@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAN’S Perfumería | Control de ventas</title>
+<style>
+:root{--navy:#101d3a;--blue:#18396b;--silver:#c8ced8;--bg:#f3f5f9;--ink:#182235;--muted:#667085;--line:#e2e6ee;--green:#13795b;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink)}
+header{background:linear-gradient(120deg,#101d3a,#203f72);color:#fff;padding:24px max(18px,calc((100% - 1180px)/2));border-bottom:4px solid #b9c2d0}
+.brand{display:flex;align-items:center;gap:14px}.logo{height:52px;width:52px;border:1px solid #c8ced8;border-radius:14px;display:grid;place-items:center;color:#e4e8ef;font-weight:800;font-size:23px}.brand h1{margin:0;font-size:24px;letter-spacing:1.5px}.brand p{margin:3px 0 0;color:#d8deea;font-size:13px}
+main{max-width:1180px;margin:24px auto;padding:0 18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px #18223508}.stat{padding:17px}.stat .label{font-size:12px;color:var(--muted);font-weight:650;text-transform:uppercase;letter-spacing:.5px}.stat .value{font-size:25px;font-weight:800;margin-top:7px}.stat small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}.panel{padding:20px;margin-bottom:18px}.panel h2{font-size:17px;margin:0 0 16px}.field{margin-bottom:13px}.field label{display:block;font-size:13px;font-weight:650;margin-bottom:6px}.field input,.field select{width:100%;padding:11px 12px;border:1px solid #cfd5df;border-radius:9px;background:#fff;font:inherit;color:var(--ink)}.field input:focus,.field select:focus{outline:2px solid #a9c1ed;border-color:#5b83c8}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pricebox{background:#f2f5fa;border-radius:10px;padding:12px;margin:12px 0}.pricebox div{display:flex;justify-content:space-between;gap:10px;margin:4px 0}.pricebox strong{font-size:17px}.btn{border:0;border-radius:10px;padding:12px 15px;font-weight:750;font:inherit;cursor:pointer}.primary{background:var(--navy);color:#fff;width:100%}.primary:hover{background:#203f72}.secondary{background:#eef2f8;color:var(--navy)}.danger{background:#fff0ef;color:var(--red)}.muted{color:var(--muted);font-size:12px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;cursor:pointer}.tabs button.active{background:var(--navy);color:#fff;border-color:var(--navy)}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:650px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);font-size:13px}th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);background:#fafbfc}td strong{font-size:13px}.profit{color:var(--green);font-weight:750}.loss{color:var(--red);font-weight:750}.actions{display:flex;gap:6px}.mini{border:0;background:#eef2f8;border-radius:7px;padding:6px 8px;cursor:pointer}.empty{text-align:center;color:var(--muted);padding:32px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.toolbar h2{margin-bottom:0}.toolbar input{padding:9px;border:1px solid var(--line);border-radius:8px}.settingsrow{display:grid;grid-template-columns:1fr 150px;gap:10px;align-items:center;margin:8px 0}.settingsrow label{font-size:13px}.settingsrow input{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px}.hidden{display:none!important}.note{padding:11px 13px;border-radius:9px;background:#f8f5e9;color:#705d24;font-size:12px;margin-top:12px}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.brand h1{font-size:20px}.stat .value{font-size:22px}}@media(max-width:420px){.stats{gap:8px}.stat{padding:12px}.stat .value{font-size:19px}.panel{padding:15px}.two{gap:7px}}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">S</div><div><h1>SAN’S PERFUMERÍA</h1><p>Control de ventas · Costos · Ganancias</p></div></div></header>
+<main>
+<section class="stats">
+ <div class="stat"><div class="label">Ventas de hoy</div><div class="value" id="todaySales">$0</div><small id="todayCount">0 operaciones</small></div>
+ <div class="stat"><div class="label">Ganancia de hoy</div><div class="value" id="todayProfit">$0</div><small>Según costos registrados</small></div>
+ <div class="stat"><div class="label">Ventas del período</div><div class="value" id="periodSales">$0</div><small id="periodCount">0 operaciones</small></div>
+ <div class="stat"><div class="label">Ganancia del período</div><div class="value" id="periodProfit">$0</div><small>Ingresos menos costos</small></div>
+</section>
+<div class="layout">
+ <div>
+  <section class="panel">
+   <h2 id="saleHeading">＋ Registrar venta</h2>
+   <form id="saleForm">
+    <div class="field"><label for="kind">Tipo de venta</label><select id="kind"><option value="detal">Venta al detal</option><option value="recarga">Recarga</option><option value="mayorista">Venta por mayor</option></select></div>
+    <div class="field"><label for="size">Presentación</label><select id="size"><option value="30">30 mililitros</option><option value="55">55 mililitros</option></select></div>
+    <div class="two"><div class="field"><label for="qty">Cantidad</label><input id="qty" type="number" min="1" step="1" value="1" required></div><div class="field"><label for="payment">Método de pago</label><select id="payment"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select></div></div>
+    <div class="field"><label for="description">Referencia / descripción (opcional)</label><input id="description" maxlength="80" placeholder="Ej. Yara, Oud for Glory…"></div>
+    <div class="field"><label for="date">Fecha y hora</label><input id="date" type="datetime-local" required></div>
+    <div class="pricebox"><div><span>Precio unitario</span><strong id="unitPrice">$19.000</strong></div><div><span>Costo unitario</span><strong id="unitCost">$0</strong></div><div><span>Total de venta</span><strong id="saleTotal">$19.000</strong></div><div><span>Ganancia estimada</span><strong id="saleProfit">$0</strong></div></div>
+    <button class="btn primary" type="submit" id="saveBtn">Guardar venta</button><button class="btn secondary hidden" type="button" id="cancelEdit" style="width:100%;margin-top:8px">Cancelar edición</button>
+    <div class="note">La ganancia será exacta solo cuando configures los costos. En recargas, incluye esencia, alcohol, envase y otros materiales.</div>
+   </form>
+  </section>
+  <section class="panel"><h2>⚙ Costos por producto</h2><p class="muted">Ingresa el costo total por unidad. Estos valores se usan para calcular las ganancias de nuevas ventas.</p><div id="costSettings"></div><button class="btn primary" id="saveCosts" type="button">Guardar costos</button></section>
+ </div>
+ <div>
+  <section class="panel">
+   <div class="toolbar"><h2>Historial de ventas</h2><button class="btn secondary" id="exportCsv">Exportar CSV</button></div>
+   <div class="tabs" style="margin-top:15px"><button class="active" data-period="today">Hoy</button><button data-period="7">Últimos 7 días</button><button data-period="30">Últimos 30 días</button><button data-period="all">Todas</button></div>
+   <div class="toolbar" style="margin-bottom:12px"><span class="muted" id="historySummary">Tus registros aparecerán aquí.</span><input id="search" placeholder="Buscar referencia…" aria-label="Buscar referencia"></div>
+   <div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Venta</th><th>Unid.</th><th>Total</th><th>Ganancia</th><th>Acciones</th></tr></thead><tbody id="salesRows"></tbody></table><div id="empty" class="empty">Todavía no hay ventas registradas.</div></div>
+  </section>
+  <section class="panel"><h2>Resumen por tipo de venta</h2><div class="tablewrap"><table style="min-width:400px"><thead><tr><th>Categoría</th><th>Operaciones</th><th>Ingresos</th><th>Ganancia</th></tr></thead><tbody id="categoryRows"></tbody></table></div></section>
+ </div>
+</div>
+<footer class="muted" style="text-align:center;padding:5px 0 24px">Los datos se guardan en este navegador. Exporta respaldos periódicamente y evita borrar los datos del navegador.</footer>
+</main>
+<script>
+const PRICES={detal:{30:19000,55:38000},recarga:{30:17000,55:35000},mayorista:{30:12000,55:22000}};
+const LABELS={detal:'Detal',recarga:'Recarga',mayorista:'Mayorista'};
+const COSTKEYS=['detal_30','detal_55','recarga_30','recarga_55','mayorista_30','mayorista_55'];
+const COSTLABELS=['Detal · 30 ml','Detal · 55 ml','Recarga · 30 ml','Recarga · 55 ml','Mayorista · 30 ml','Mayorista · 55 ml'];
+const money=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(Number(n)||0);
+const localDateTime=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
+const dateKey=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`};
+let sales=JSON.parse(localStorage.getItem('sans_sales_v1')||'[]');
+let costs=JSON.parse(localStorage.getItem('sans_costs_v1')||'{}');
+let period='today',editingId=null;
+const $=id=>document.getElementById(id);
+function saveSales(){localStorage.setItem('sans_sales_v1',JSON.stringify(sales))}
+function saveCosts(){localStorage.setItem('sans_costs_v1',JSON.stringify(costs))}
+function costKey(kind,size){return `${kind}_${size}`}
+function unitCost(kind,size){return Number(costs[costKey(kind,size)]||0)}
+function calc(){const k=$('kind').value,s=$('size').value,q=Math.max(1,Number($('qty').value)||1),p=PRICES[k][s],c=unitCost(k,s);$('unitPrice').textContent=money(p);$('unitCost').textContent=money(c);$('saleTotal').textContent=money(p*q);$('saleProfit').textContent=money((p-c)*q);$('saleProfit').style.color=(p-c)<0?'var(--red)':'var(--green)'}
+function renderCosts(){ $('costSettings').innerHTML=COSTKEYS.map((key,i)=>`<div class="settingsrow"><label for="cost_${key}">${COSTLABELS[i]}</label><input id="cost_${key}" type="number" min="0" step="100" placeholder="Costo en pesos" value="${costs[key]??''}"></div>`).join('') }
+function startEdit(id){const x=sales.find(s=>s.id===id);if(!x)return;editingId=id;$('kind').value=x.kind;$('size').value=x.size;$('qty').value=x.qty;$('payment').value=x.payment;$('description').value=x.description;$('date').value=x.date;$('saleHeading').textContent='✎ Editar venta';$('saveBtn').textContent='Guardar cambios';$('cancelEdit').classList.remove('hidden');calc();window.scrollTo({top:0,behavior:'smooth'})}
+function cancelEdit(){editingId=null;$('saleForm').reset();$('date').value=localDateTime();$('qty').value=1;$('saleHeading').textContent='＋ Registrar venta';$('saveBtn').textContent='Guardar venta';$('cancelEdit').classList.add('hidden');calc()}
+function inPeriod(s){if(period==='all')return true;const d=dateKey(s.date),today=dateKey(new Date());if(period==='today')return d===today;const age=(new Date(today+'T00:00:00')-new Date(d+'T00:00:00'))/86400000;return age>=0&&age<Number(period)}
+function stats(list){return {revenue:list.reduce((a,s)=>a+s.total,0),profit:list.reduce((a,s)=>a+s.profit,0),qty:list.reduce((a,s)=>a+s.qty,0)}}
+function render(){
+ const today=sales.filter(s=>dateKey(s.date)===dateKey(new Date())),ts=stats(today),ps=stats(sales.filter(inPeriod));
+ $('todaySales').textContent=money(ts.revenue);$('todayProfit').textContent=money(ts.profit);$('todayCount').textContent=`${today.length} operaciones · ${ts.qty} unidades`;
+ $('periodSales').textContent=money(ps.revenue);$('periodProfit').textContent=money(ps.profit);$('periodCount').textContent=`${sales.filter(inPeriod).length} operaciones · ${ps.qty} unidades`;
+ const query=$('search').value.trim().toLowerCase();
+ const shown=sales.filter(inPeriod).filter(s=>(s.description+' '+LABELS[s.kind]+' '+s.payment).toLowerCase().includes(query)).sort((a,b)=>b.date.localeCompare(a.date));
+ $('historySummary').textContent=`${shown.length} registros · ${money(stats(shown).revenue)} vendidos`;
+ $('empty').style.display=shown.length?'none':'block';
+ $('salesRows').innerHTML=shown.map(s=>`<tr><td>${new Date(s.date).toLocaleString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}<div class="muted">${s.payment}</div></td><td><strong>${LABELS[s.kind]} · ${s.size} ml</strong><div class="muted">${esc(s.description||'Sin referencia')}</div></td><td>${s.qty}</td><td><strong>${money(s.total)}</strong></td><td class="${s.profit<0?'loss':'profit'}">${money(s.profit)}</td><td><div class="actions"><button class="mini" title="Editar" onclick="startEdit('${s.id}')">✎</button><button class="mini" title="Eliminar" onclick="deleteSale('${s.id}')">✕</button></div></td></tr>`).join('');
+ const cats=['detal','recarga','mayorista'];$('categoryRows').innerHTML=cats.map(k=>{const a=sales.filter(s=>inPeriod(s)&&s.kind===k),z=stats(a);return `<tr><td><strong>${LABELS[k]}</strong></td><td>${a.length}</td><td>${money(z.revenue)}</td><td class="${z.profit<0?'loss':'profit'}">${money(z.profit)}</td></tr>`}).join('');
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function deleteSale(id){if(!confirm('¿Eliminar este registro de venta?'))return;sales=sales.filter(s=>s.id!==id);saveSales();if(editingId===id)cancelEdit();render()}
+$('saleForm').addEventListener('submit',e=>{e.preventDefault();const kind=$('kind').value,size=$('size').value,qty=Number($('qty').value),price=PRICES[kind][size],cost=unitCost(kind,size);if(!Number.isInteger(qty)||qty<1){alert('Ingresa una cantidad válida.');return}const record={id:editingId||`${Date.now()}_${Math.random().toString(36).slice(2,7)}`,kind,size,qty,payment:$('payment').value,description:$('description').value.trim(),date:$('date').value,unitPrice:price,unitCost:cost,total:price*qty,profit:(price-cost)*qty};if(editingId)sales=sales.map(s=>s.id===editingId?record:s);else sales.push(record);saveSales();cancelEdit();render()});
+$('cancelEdit').addEventListener('click',cancelEdit);
+['kind','size','qty'].forEach(id=>$(id).addEventListener('input',calc));
+$('saveCosts').addEventListener('click',()=>{for(const key of COSTKEYS){const v=$(`cost_${key}`).value;if(v!==''&&(!Number.isFinite(Number(v))||Number(v)<0)){alert('Revisa los costos: deben ser valores iguales o mayores que cero.');return}costs[key]=v===''?0:Number(v)}saveCosts();calc();render();alert('Costos guardados. Se aplicarán a las nuevas ventas; las ventas anteriores conservan su costo registrado.')});
+document.querySelectorAll('[data-period]').forEach(b=>b.addEventListener('click',()=>{period=b.dataset.period;document.querySelectorAll('[data-period]').forEach(x=>x.classList.toggle('active',x===b));render()}));
+$('search').addEventListener('input',render);
+$('exportCsv').addEventListener('click',()=>{if(!sales.length){alert('Todavía no hay ventas para exportar.');return}const rows=[['Fecha','Tipo','Presentación ml','Cantidad','Método de pago','Referencia','Precio unitario','Costo unitario','Total venta','Ganancia'],...sales.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(s=>[s.date,LABELS[s.kind],s.size,s.qty,s.payment,s.description,s.unitPrice,s.unitCost,s.total,s.profit])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='sans-perfumeria-ventas.csv';a.click();URL.revokeObjectURL(url)});
+$('date').value=localDateTime();renderCosts();calc();render();
+</script></body></html>
